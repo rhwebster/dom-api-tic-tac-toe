@@ -1,3 +1,5 @@
+// let player = 'X'
+
 let squareValues = ["", "", "", "", "", "", "", "", ""];
 window.addEventListener("DOMContentLoaded", (event) => {
   const board = document.getElementById(`tic-tac-toe-board`);
@@ -28,10 +30,22 @@ window.addEventListener("DOMContentLoaded", (event) => {
       squareValue[squareIndex] = player;
     }
   };
+
+
   board.addEventListener("click", (event) => {
-    count++;
     const target = event.target.id;
     const squareIndex = Number.parseInt(target[target.length - 1]);
+    //  if (squareValues[squareIndex] !== '') {
+    //     return
+    // } else {
+    //     event.target.appendChild(img)
+    // }
+    // squareValues[squareIndex] = player;
+    // if (player === 'X') {
+    //     player === 'O';
+    // } else {
+    //     player === 'o'
+    // } 
     ifEmptyFunc = (ifEmpty = (element, squareIndex) => {
       if (squareValues[squareIndex] === "") {
         return true;
