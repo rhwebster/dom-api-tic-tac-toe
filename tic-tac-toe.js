@@ -4,21 +4,25 @@ let winner = "";
 let stopProp = false;
 
 function saveGame() {
-  window.localStorage.setItem('squareValues', squareValues)
-  window.localStorage.setItem('winner', winner);
-  window.localStorage.setItem('player', player);
+  window.localStorage.setItem("squareValues", squareValues);
+  window.localStorage.setItem("winner", winner);
+  window.localStorage.setItem("player", player);
 }
 
 window.addEventListener("DOMContentLoaded", (event) => {
-  if (window.localStorage.getItem('player')) {
-    squareValues = window.localStorage.getItem('squareValues');
-    player = window.localStorage.getItem('player');
-    winner = window.localStorage.getItem('winner');
-    squareValues.forEach(function(element, i) {
-      if (element !== '') {
-        
+  if (window.localStorage.getItem("player")) {
+    squareValues = window.localStorage.getItem("squareValues").split(",");
+    player = window.localStorage.getItem("player");
+    winner = window.localStorage.getItem("winner");
+    squareValues.forEach(function (element, i) {
+      playerLowercase = element.toLowerCase();
+      if (element !== "") {
+        const img = document.createElement("img");
+        img.src = `https://assets.aaonline.io/Module-DOM-API/formative-project-tic-tac-toe/player-${element.toLowerCase()}.svg`;
+        document.getElementById(`square-${i}`).appendChild(img);
       }
-    })
+    });
+    document.getElementById("game-status").innerHTML = winner;
   }
   const board = document.getElementById(`tic-tac-toe-board`);
   const checkWinner = (squareValues) => {
@@ -99,13 +103,15 @@ window.addEventListener("DOMContentLoaded", (event) => {
   });
 });
 document.querySelector(".actions").addEventListener("click", (event) => {
-  if (event.target.innerText === "New Game" && winner === '') {
+  if (event.target.innerText === "New Game" && winner !== "") {
     localStorage.clear();
     location.reload();
   }
   if (event.target.innerText === "Give Up" && winner === "") {
     winner = player === "X" ? `Winner: O` : `Winner: X`;
     document.getElementById("game-status").innerHTML = winner;
+    stopProp = true;
+    window.localStorage.setItem("winner", winner);
     document.querySelector(".actions").addEventListener("click", (event) => {
       if (event.target.innerText === "New Game" && winner !== "") {
         localStorage.clear();
