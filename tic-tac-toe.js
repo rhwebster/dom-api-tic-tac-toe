@@ -3,7 +3,23 @@ let squareValues = ["", "", "", "", "", "", "", "", ""];
 let winner = "";
 let stopProp = false;
 
+function saveGame() {
+  window.localStorage.setItem('squareValues', squareValues)
+  window.localStorage.setItem('winner', winner);
+  window.localStorage.setItem('player', player);
+}
+
 window.addEventListener("DOMContentLoaded", (event) => {
+  if (window.localStorage.getItem('player')) {
+    squareValues = window.localStorage.getItem('squareValues');
+    player = window.localStorage.getItem('player');
+    winner = window.localStorage.getItem('winner');
+    squareValues.forEach(function(element, i) {
+      if (element !== '') {
+        
+      }
+    })
+  }
   const board = document.getElementById(`tic-tac-toe-board`);
   const checkWinner = (squareValues) => {
     for (let i = 0; i < squareValues.length; i += 3) {
@@ -78,18 +94,21 @@ window.addEventListener("DOMContentLoaded", (event) => {
         player = "X";
       }
       checkWinner(squareValues);
+      saveGame();
     }
   });
 });
 document.querySelector(".actions").addEventListener("click", (event) => {
-  if (event.target.innerText === "New Game" && winner !== "") {
+  if (event.target.innerText === "New Game" && winner === '') {
+    localStorage.clear();
     location.reload();
   }
   if (event.target.innerText === "Give Up" && winner === "") {
-    winner = player = "X" ? `Winner: O` : `Winner: X`;
+    winner = player === "X" ? `Winner: O` : `Winner: X`;
     document.getElementById("game-status").innerHTML = winner;
     document.querySelector(".actions").addEventListener("click", (event) => {
       if (event.target.innerText === "New Game" && winner !== "") {
+        localStorage.clear();
         location.reload();
       }
     });
