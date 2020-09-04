@@ -1,58 +1,98 @@
-// let player = 'X'
-
+let player = "X";
 let squareValues = ["", "", "", "", "", "", "", "", ""];
+let winner = "";
+let stopProp = false;
+
 window.addEventListener("DOMContentLoaded", (event) => {
   const board = document.getElementById(`tic-tac-toe-board`);
-  let count = 0;
-  let player = null;
-  let ifEmptyFunc;
-
-  const addPlayerSymbol = (element, squareIndex) => {
-    if (ifEmptyFunc && count % 2 !== 0) {
-      player = "X";
-      const img = document.createElement("img");
-      img.setAttribute(
-        "href",
-        "https://assets.aaonline.io/Module-DOM-API/formative-project-tic-tac-toe/player-x.svg"
-      );
-      img.setAttribute("id", "X");
-      element.appendChild(img);
-      squareValue[squareIndex] = player;
-    } else if (ifEmptyFunc && count % 2 === 0) {
-      player = "O";
-      const img = document.createElement("img");
-      img.setAttribute(
-        "href",
-        "https://assets.aaonline.io/Module-DOM-API/formative-project-tic-tac-toe/player-o.svg"
-      );
-      img.setAttribute("id", "O");
-      element.appendChild(img);
-      squareValue[squareIndex] = player;
+  const checkWinner = (squareValues) => {
+    for (let i = 0; i < squareValues.length; i += 3) {
+      // rows
+      const el1 = squareValues[i];
+      const el2 = squareValues[i + 1];
+      const el3 = squareValues[i + 2];
+      if (el1 !== "" && el1 === el2 && el2 === el3) {
+        winner = `Winner: ${el1}`;
+        stopProp = true;
+      }
     }
+    for (let i = 0; i < 3; i += 1) {
+      // columns
+      const el1 = squareValues[i];
+      const el2 = squareValues[i + 3];
+      const el3 = squareValues[i + 6];
+      if (el1 !== "" && el1 === el2 && el2 === el3) {
+        winner = `Winner: ${el1}`;
+        stopProp = true;
+      }
+    }
+    for (let i = 0; i < 3; i += 1) {
+      // columns
+      const el1 = squareValues[i];
+      const el2 = squareValues[i + 3];
+      const el3 = squareValues[i + 6];
+      if (el1 !== "" && el1 === el2 && el2 === el3) {
+        winner = `Winner: ${el1}`;
+        stopProp = true;
+      }
+    }
+    if (
+      squareValues[4] !== "" &&
+      ((squareValues[0] === squareValues[4] &&
+        squareValues[4] === squareValues[8]) ||
+        (squareValues[2] === squareValues[4] &&
+          squareValues[4] === squareValues[6]))
+    ) {
+      winner = `Winner: ${squareValues[4]}`;
+      stopProp = true;
+      console.log(stopProp);
+    }
+    if (!squareValues.includes("") && winner === "") {
+      winner = "None! Tied you losers!";
+    }
+    document.getElementById("game-status").innerHTML = winner;
   };
 
-
   board.addEventListener("click", (event) => {
-    const target = event.target.id;
-    const squareIndex = Number.parseInt(target[target.length - 1]);
-    //  if (squareValues[squareIndex] !== '') {
-    //     return
-    // } else {
-    //     event.target.appendChild(img)
-    // }
-    // squareValues[squareIndex] = player;
-    // if (player === 'X') {
-    //     player === 'O';
-    // } else {
-    //     player === 'o'
-    // } 
-    ifEmptyFunc = (ifEmpty = (element, squareIndex) => {
-      if (squareValues[squareIndex] === "") {
-        return true;
+    if (stopProp) {
+      return;
+    } else {
+      const playerLowercase = player.toLowerCase();
+      const targetId = event.target.id;
+      const squareIndex = Number.parseInt(targetId[targetId.length - 1]);
+      if (squareValues[squareIndex] !== "") {
+        return;
       } else {
-        return false;
+        const img = document.createElement("img");
+        img.setAttribute(
+          "src",
+          `https://assets.aaonline.io/Module-DOM-API/formative-project-tic-tac-toe/player-${playerLowercase}.svg`
+        );
+        img.setAttribute("id", player);
+        event.target.appendChild(img);
       }
-    })();
-    addPlayerSymbol(event.target, squareIndex);
+      squareValues[squareIndex] = player;
+      if (player === "X") {
+        player = "O";
+      } else {
+        player = "X";
+      }
+      checkWinner(squareValues);
+    }
   });
+});
+document.querySelector(".actions").addEventListener("click", (event) => {
+  // console.log(event.target.innerText);
+  if (event.target.innerText === "New Game" && winner !== "") {
+    location.reload();
+  }
+  if (event.target.innerText === "Give Up" && winner === "") {
+    winner = player = "X" ? `Winner: O` : `Winner: X`;
+    document.getElementById("game-status").innerHTML = winner;
+    document.querySelector(".actions").addEventListener("click", (event) => {
+      if (event.target.innerText === "New Game" && winner !== "") {
+        location.reload();
+      }
+    });
+  }
 });
