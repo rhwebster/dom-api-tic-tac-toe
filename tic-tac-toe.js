@@ -82,7 +82,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
   });
 });
 document.querySelector(".actions").addEventListener("click", (event) => {
-  // console.log(event.target.innerText);
   if (event.target.innerText === "New Game" && winner !== "") {
     location.reload();
   }
