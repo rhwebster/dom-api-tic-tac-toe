@@ -67,7 +67,7 @@ const checkWinner = () => {
 };
 
 function computerPlays() {
-  let computerSpace = getRandomInt(8)
+  let computerSpace = getRandomInt(9)
   
   if (squareValues[computerSpace] === '') {
     const img = document.createElement("img");
@@ -91,15 +91,8 @@ function computerPlays() {
 }
 
 window.addEventListener("DOMContentLoaded", (event) => {
-  const isEmpty = (el) => el === ''
-
-  console.log(squareValues.every(isEmpty));
-  console.log(Math.random());
-
-  if (Math.random() >= .5 && squareValues.every(isEmpty)) {
-    setTimeout(computerPlays, 500)
-  }
-
+  const isEmpty = el => el === '';
+  
   if (window.localStorage.getItem("player")) {
     squareValues = window.localStorage.getItem("squareValues").split(",");
     player = window.localStorage.getItem("player");
@@ -113,6 +106,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
       }
     });
     document.getElementById("game-status").innerHTML = winner;
+  }
+
+  if (Math.random() >= .5 && squareValues.every(isEmpty)) {
+    setTimeout(computerPlays, 500)
   }
 
   
