@@ -3,8 +3,10 @@ let squareValues = ["", "", "", "", "", "", "", "", ""];
 let winner = "";
 let stopProp = false;
 const board = document.getElementById(`tic-tac-toe-board`);
-let giveUpButton = document.getElementById('give-up')
-giveUpButton.disabled = false
+let giveUpButton = document.getElementById('give-up');
+let newGameButton = document.getElementById('new-game');
+giveUpButton.disabled = false;
+newGameButton.disabled = false;
 
 function saveGame() {
   window.localStorage.setItem("squareValues", squareValues);
@@ -16,8 +18,8 @@ function getRandomInt(n) {
   return Math.floor(Math.random() * Math.floor(n))
 }
 
-const checkWinner = (squareValues) => {
-  for (let i = 0; i < squareValues.length; i += 3) {
+const checkWinner = () => {
+  for (let i = 0; i < 9; i += 3) {
     // rows
     const el1 = squareValues[i];
     const el2 = squareValues[i + 1];
@@ -25,11 +27,11 @@ const checkWinner = (squareValues) => {
     if (el1 !== "" && el1 === el2 && el2 === el3) {
       winner = `Winner: ${el1}`;
       giveUpButton.disabled = true;
-      stopProp = true;
-
-      return true
+      newGameButton.disabled = false
+      // stopProp = true;
     }
   }
+ 
   for (let i = 0; i < 3; i += 1) {
     // columns
     const el1 = squareValues[i];
@@ -38,20 +40,8 @@ const checkWinner = (squareValues) => {
     if (el1 !== "" && el1 === el2 && el2 === el3) {
       winner = `Winner: ${el1}`;
       giveUpButton.disabled = true;
-      stopProp = true;
-      return true
-    }
-  }
-  for (let i = 0; i < 3; i += 1) {
-    // columns
-    const el1 = squareValues[i];
-    const el2 = squareValues[i + 3];
-    const el3 = squareValues[i + 6];
-    if (el1 !== "" && el1 === el2 && el2 === el3) {
-      winner = `Winner: ${el1}`;
-      giveUpButton.disabled = true;
-      stopProp = true;
-      return true
+      newGameButton.disabled = false
+      // stopProp = true;
     }
   }
   if (
@@ -63,12 +53,15 @@ const checkWinner = (squareValues) => {
   ) {
     winner = `Winner: ${squareValues[4]}`;
     giveUpButton.disabled = true;
-    stopProp = true;
+    newGameButton.disabled = false
+    // stopProp = true;
     console.log(stopProp);
   }
   if (!squareValues.includes("") && winner === "") {
-    winner = "Winner: None! Tied you losers!";
+    winner = "Winner: None";
+    console.log('Tied suckers!')
     giveUpButton.disabled = true;
+    newGameButton.disabled = false;
   }
   document.getElementById("game-status").innerHTML = winner;
 };
@@ -76,8 +69,6 @@ const checkWinner = (squareValues) => {
 function computerPlays() {
   let computerSpace = getRandomInt(8)
   
-  
-
   if (squareValues[computerSpace] === '') {
     const img = document.createElement("img");
     img.src = `https://assets.aaonline.io/Module-DOM-API/formative-project-tic-tac-toe/player-${player.toLowerCase()}.svg`;
@@ -90,9 +81,9 @@ function computerPlays() {
       player = "X";
     }
 
-    checkWinner(squareValues)
+    checkWinner()
     document.getElementById("game-status").innerHTML = winner;
-    giveUpButton.disabled = true;
+    saveGame();
     return;
   } else {
     computerPlays();
@@ -100,7 +91,11 @@ function computerPlays() {
 }
 
 window.addEventListener("DOMContentLoaded", (event) => {
-  const isEmpty = (squareValues) => squareValues === ''
+  const isEmpty = (el) => el === ''
+
+  console.log(squareValues.every(isEmpty));
+  console.log(Math.random());
+
   if (Math.random() >= .5 && squareValues.every(isEmpty)) {
     setTimeout(computerPlays, 500)
   }
@@ -147,18 +142,18 @@ window.addEventListener("DOMContentLoaded", (event) => {
         player = "X";
       }
 
+      checkWinner();
+      saveGame();
+
       if (event.target.id.startsWith('square-') && winner === '') {
         setTimeout(computerPlays, 1000)
       }
-      checkWinner(squareValues);
-      setTimeout(saveGame, 1001);
-      
     }
   });
 });
 
 document.querySelector(".actions").addEventListener("click", (event) => {
-  if (event.target.innerText === "New Game" && winner !== "") {
+  if (event.target.id === "new-game" && winner !== "") {
     localStorage.clear();
     location.reload();
   }
@@ -174,7 +169,4 @@ document.querySelector(".actions").addEventListener("click", (event) => {
       }
     });
   }
-  setTimeout(computerPlays, 500)
-
-
 });
